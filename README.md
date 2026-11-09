@@ -1,64 +1,120 @@
-# DeepSeek Pricing
+<div align="center">
 
-A status-bar widget for [Omarchy](https://omarchy.org) that answers one
-question: **is DeepSeek cheap right now?**
+<img src="assets/deepseek-mark.svg" alt="DeepSeek Logo" width="80" height="80" />
 
-The API bills in two tiers. Off-peak costs exactly half of peak, and peak is
-01:00–04:00 and 06:00–10:00 UTC, Monday to Friday, excluding Chinese public
-holidays. In São Paulo that lands at 22:00–01:00 and 03:00–07:00, which is
-easy to get wrong by hand.
+# DeepSeek Pricing · Omarchy Status Bar Widget
 
-- The bar pill shows the DeepSeek mark and the active tier: `½` off-peak,
-  `2×` at peak. While off-peak, a soft ring pulses around the logo.
-- The tooltip carries the countdown to the next switch and the current
-  input/output price per 1M tokens.
-- Left click opens the panel: the local day with peak windows shaded, the
-  current prices for both models, and a spend-now-or-wait hint.
-- Right click opens the official price page.
+[![Omarchy](https://img.shields.io/badge/Omarchy-Plugin-3b82f6?style=for-the-badge&logo=linux&logoColor=white)](https://omarchy.org)
+[![DeepSeek](https://img.shields.io/badge/DeepSeek-API%20Pricing-4f46e5?style=for-the-badge)](https://api-docs.deepseek.com/quick_start/pricing)
+[![Tests](https://img.shields.io/badge/Tests-Passing%20(6%2F6)-10b981?style=for-the-badge&logo=node.js&logoColor=white)](tests/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-## Install
+<p align="center">
+  <b>Never overpay for tokens again.</b><br>
+  A real-time status-bar widget for <a href="https://omarchy.org">Omarchy Linux</a> that monitors DeepSeek API pricing tiers, countdowns, and optimal execution windows right on your panel.
+</p>
+
+[✨ Recursos](#-recursos--features) •
+[📥 Instalação](#-instalação--installation) •
+[⚙️ Configurações](#️-configurações--configuration) •
+[🧪 Testes](#-testes) •
+[📊 Regras de Preço](#-tabela-de-preços--horários)
+
+---
+
+</div>
+
+## 💡 Sobre o Projeto
+
+A API da **DeepSeek** opera com precificação dinâmica em duas faixas: **Horário de Pico (Peak)** e **Fora de Pico (Off-Peak)** com **50% de desconto** imediato no custo de tokens.
+
+Os horários oficiais são em UTC (01:00–04:00 e 06:00–10:00 UTC, segunda a sexta, exceto feriados nacionais chineses). Em fusos locais (como São Paulo `UTC-3`), calcular manualmente a transição pode gerar erros e gastos desnecessários.
+
+Este widget integra-se nativamente à barra do Omarchy para fornecer feedback visual imediato e contagem regressiva para a próxima janela promocional.
+
+---
+
+## ✨ Recursos / Features
+
+| Recurso | Descrição |
+| :--- | :--- |
+| 🏷️ **Pill no Painel** | Exibe o ícone oficial da DeepSeek e a taxa atual: `½` (50% off) ou `2×` (pico normal). |
+| 💫 **Animação Pulsante** | Halo suave e pulsante ao redor do logo durante o período de desconto (*off-peak*). |
+| ⏱️ **Countdown Tooltip** | Hover exibe o tempo exato para a próxima alteração de tarifa e valores atuais por 1M tokens. |
+| 📅 **Painel com Timeline** | Clique com o botão esquerdo para abrir o painel detalhado do dia local, dividindo janelas de pico e dicas (*spend now or wait*). |
+| 🌐 **Acesso Rápido** | Clique com o botão direito para ir direto à tabela oficial de preços da DeepSeek. |
+| 🎨 **Tema Nativo** | QML nativo com `MultiEffect`, adaptando-se automaticamente à paleta de cores e acentos do seu tema Omarchy. |
+| 🚀 **Zero Network Overhead** | Sem requisições externas desnecessárias; regras e janelas calculadas com máxima precisão offline via `Model.js`. |
+
+---
+
+## 📥 Instalação / Installation
+
+Para habilitar o plugin no seu painel Omarchy:
 
 ```bash
 omarchy plugin enable teteu.deepseek-pricing --section right --after omarchy.tray
 ```
 
-Settings (bar settings UI or the `shell.json` entry): `showPro` and `animate`.
+Ou instale a partir deste repositório:
 
-## Data
+```bash
+git clone https://github.com/voidFrance/DeepSeek-Pricing-Plugin-Omarchy.git ~/.config/omarchy/plugins/teteu.deepseek-pricing
+omarchy plugin enable teteu.deepseek-pricing
+```
 
-- Prices live in `Model.js` (`PRICING`). They are the official USD per 1M
-  token rates, effective 2026-08-17:
-  <https://api-docs.deepseek.com/quick_start/pricing>
-- Peak windows are in UTC. Never compare a local hour against them: the
-  plugin converts, and the local timeline is built from the UTC edges, so it
-  stays correct in time zones with :30 offsets and DST.
-- Chinese holidays are in `Model.js` (`HOLIDAYS`). Weekends are always
-  off-peak, so only weekday dates need listing. A missing date makes the
-  widget claim peak when it is actually off-peak — never the other way
-  around, which is the safe direction.
-- The State Council publishes one holiday calendar per year. Add the next
-  year's dates as soon as they are announced and list the year in
-  `COMPLETE_HOLIDAY_YEARS`. Until then the panel shows a warning saying peak
-  is being assumed.
+---
 
-## Tests
+## ⚙️ Configurações / Configuration
 
-`Model.js` is plain JavaScript with no Qt imports, so it runs in Node. It is
-loaded through `vm` with `.pragma library` stripped.
+Você pode configurar o plugin através da UI de preferências do painel ou editando o seu `shell.json`:
+
+```json
+{
+  "plugins": {
+    "teteu.deepseek-pricing": {
+      "showPro": true,
+      "animate": true
+    }
+  }
+}
+```
+
+* `showPro` *(boolean, default: `true`)*: Exibe as taxas detalhadas para `deepseek-v4-pro` além do modelo flash padrão.
+* `animate` *(boolean, default: `true`)*: Efeito visual pulsante durante a tarifa reduzida (respeita a chave global de animações do Omarchy).
+
+---
+
+## 📊 Tabela de Preços & Horários
+
+### ⏰ Janelas UTC vs Local (São Paulo / UTC-3)
+* **Pico 1 (UTC)**: `01:00 – 04:00 UTC` ➔ **22:00 – 01:00 (UTC-3)**
+* **Pico 2 (UTC)**: `06:00 – 10:00 UTC` ➔ **03:00 – 07:00 (UTC-3)**
+* **Finais de semana & Feriados chineses**: Sempre tarifa reduzida `½` (*Off-peak*).
+
+---
+
+## 🧪 Testes
+
+A lógica de cálculo de fusos, calendários e transições em [`Model.js`](Model.js) é desacoplada e pode ser validada usando a suite de testes nativa do Node.js:
 
 ```bash
 node --test tests/
 ```
 
-The suite covers the UTC boundaries, the weekend gap, the next-change scan,
-a Chinese holiday, and the local-day segmentation (whole day, no gaps,
-segment tiers matching their own midpoints).
+```
+✔ UTC boundaries flip exactly on the hour
+✔ weekends are off-peak
+✔ next change crosses the night and the weekend
+✔ Chinese public holidays suppress peak on weekdays
+✔ local timeline covers the whole day and matches the tier
+✔ formatters and prices
+```
 
-## Notes
+---
 
-- The logo is the official mark, painted through its alpha with a
-  `MultiEffect` mask so it follows the theme's foreground/accent colour.
-- Motion uses `Style.duration()` and stops with Omarchy's animations toggle;
-  the panel's one-second countdown only runs while it is open.
-- No network access. Prices ship with the plugin; the panel footer names the
-  date they took effect.
+## 👤 Autor
+
+Desenvolvido por **[voidFrance](https://github.com/voidFrance)**.
+
+Distribuído sob licença [MIT](LICENSE).
