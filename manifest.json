@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "teteu.deepseek-pricing",
+  "name": "DeepSeek Pricing",
+  "version": "1.0.0",
+  "author": "teteu",
+  "description": "Peak and off-peak DeepSeek API prices, with the next switch and a spend-now-or-wait hint",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "DeepSeek Pricing",
+    "description": "Shows whether DeepSeek is charging peak or half price right now",
+    "category": "Status",
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "schema": [
+      {
+        "key": "showPro",
+        "type": "boolean",
+        "label": "Show deepseek-v4-pro",
+        "description": "Also show prices for the larger model. Off shows deepseek-flash only.",
+        "defaultValue": true
+      },
+      {
+        "key": "animate",
+        "type": "boolean",
+        "label": "Animate the logo",
+        "description": "A soft pulse around the logo while the off-peak rate is active. Follows Omarchy's animations toggle.",
+        "defaultValue": true
+      }
+    ]
+  }
+}
